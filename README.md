@@ -25,6 +25,9 @@ $ npm install
 ```
 
 ## Running the app
+check the .env.example for the required config data
+
+supplier the PORT and DATABASE_URL
 
 ```bash
 # development

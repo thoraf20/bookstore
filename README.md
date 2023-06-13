@@ -3,18 +3,19 @@
 ## Description
 
 The REST API has the following endpoints:
-  POST "/api/books" to add books
-  GET "/api/books" to fetch all books
-  GET "/api/books/{bookId}" to fetch a single book by id
-  PATCH "/api/books/{bookId}" to update a book details
-  DELETE "/api/books/{bookId}" to delete book
+
+  # POST "/api/books" to add books
+  # GET "/api/books" to fetch all books
+  # GET "/api/books/{bookId}" to fetch a single book by id
+  # PATCH "/api/books/{bookId}" to update a book details
+  # DELETE "/api/books/{bookId}" to delete book
 
 ## Clone app
 
 Clone the repo and run the command:
 
 ```bash
-$ git clone {link to github repo}
+$ git clone https://github.com/thoraf20/bookstore.git
 ```
 ## Installation
 
@@ -46,7 +47,7 @@ $ npm run test
 $ npm run test:cov
 ```
 ## Technologies used
-Nestjs
-Postgres
-Typeorm
-Swagger Doc
+# Nestjs
+# Postgres
+# Typeorm
+# Swagger Doc

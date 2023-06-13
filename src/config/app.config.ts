@@ -27,7 +27,7 @@ export default () => {
         desc: 'swagger password',
       }),
       DATABASE_URL: url({
-        default: 'postgres://postgres:postgres@localhost:5432/bookstore',
+        default: 'postgresql://username:password@localhost:5432/database',
         desc: 'Full URL to connect to database server.',
         example: 'postgresql://username:password@localhost:5432/database',
       }),

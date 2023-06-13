@@ -4,11 +4,11 @@
 
 The REST API has the following endpoints:
 
-  ### POST "/api/books" to add books
-  ### GET "/api/books" to fetch all books
-  ### GET "/api/books/{bookId}" to fetch a single book by id
-  ### PATCH "/api/books/{bookId}" to update a book details
-  ### DELETE "/api/books/{bookId}" to delete book
+  ### POST  "/api/books"  to add books
+  ### GET  "/api/books"  to fetch all books
+  ### GET  "/api/books/{bookId}"  to fetch a single book by id
+  ### PATCH  "/api/books/{bookId}"  to update a book details
+  ### DELETE  "/api/books/{bookId}"  to delete book
 
 ## Clone app
 

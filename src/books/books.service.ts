@@ -1,6 +1,10 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Books } from './books.entity';
 import { AddBookDto } from './dto/books.dto';
 
@@ -30,5 +34,17 @@ export class BooksService {
     const books = await this.bookRepository.find();
 
     return books;
+  }
+
+  async getBook(id: string) {
+    const book = await this.bookRepository.findOne({
+      where: { id },
+    });
+
+    if (!book) {
+      throw new NotFoundException(`Book with id ${id} not found`);
+    }
+
+    return book;
   }
 }

@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { NotFoundException, ValidationPipe } from '@nestjs/common';
 import bodyParser from 'body-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import env from './config/app.config';
@@ -148,6 +148,80 @@ describe('AppController', () => {
         where: { author: dto.author, title: dto.title, isbn: dto.isbn },
       });
       expect(bookRepositoryMock.save).not.toBeCalledTimes(0);
+    });
+
+    // Tests that all books can be successfully retrieved
+    it('test get all books success', async () => {
+      const bookRepositoryMock = {
+        find: jest.fn().mockReturnValue([
+          {
+            id: '1',
+            title: 'Test Book 1',
+            author: 'Test Author 1',
+            isbn: '1234567890',
+          },
+          {
+            id: '2',
+            title: 'Test Book 2',
+            author: 'Test Author 2',
+            isbn: '0987654321',
+          },
+        ]),
+      };
+      const booksService = new BooksService(bookRepositoryMock as any);
+      const result = await booksService.getAllBooks();
+      expect(result).toEqual([
+        {
+          id: '1',
+          title: 'Test Book 1',
+          author: 'Test Author 1',
+          isbn: '1234567890',
+        },
+        {
+          id: '2',
+          title: 'Test Book 2',
+          author: 'Test Author 2',
+          isbn: '0987654321',
+        },
+      ]);
+      expect(bookRepositoryMock.find).toHaveBeenCalled();
+    });
+
+    // Tests that a specific book can be successfully retrieved
+    it('test get book success', async () => {
+      const bookRepositoryMock = {
+        findOne: jest.fn().mockReturnValue({
+          id: '1',
+          title: 'Test Book',
+          author: 'Test Author',
+          isbn: '1234567890',
+        }),
+      };
+      const booksService = new BooksService(bookRepositoryMock as any);
+      const result = await booksService.getBook('1');
+      expect(result).toEqual({
+        id: '1',
+        title: 'Test Book',
+        author: 'Test Author',
+        isbn: '1234567890',
+      });
+      expect(bookRepositoryMock.findOne).toHaveBeenCalledWith({
+        where: { id: '1' },
+      });
+    });
+
+    // Tests that an error is thrown when retrieving a book that does not exist
+    it('test get book not found', async () => {
+      const bookRepositoryMock = {
+        findOne: jest.fn().mockReturnValue(undefined),
+      };
+      const booksService = new BooksService(bookRepositoryMock as any);
+      await expect(booksService.getBook('1')).rejects.toThrowError(
+        new NotFoundException(`Book with id 1 not found`),
+      );
+      expect(bookRepositoryMock.findOne).toHaveBeenCalledWith({
+        where: { id: '1' },
+      });
     });
   });
 });

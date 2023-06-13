@@ -10,6 +10,7 @@ import env from './config/app.config';
 import basicAuth from 'express-basic-auth';
 import { BooksService } from './books/books.service';
 import { AddBookDto } from './books/dto/books.dto';
+import { Books } from './books/books.entity';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -222,6 +223,61 @@ describe('AppController', () => {
       expect(bookRepositoryMock.findOne).toHaveBeenCalledWith({
         where: { id: '1' },
       });
+    });
+
+    // Tests that a book can be updated successfully
+    it('test update book successfully', async () => {
+      const updatedBookData = {
+        title: 'Updated Test Book',
+        author: 'Updated Test Author',
+        isbn: '0987654321',
+      };
+      const bookRepositoryMock = {
+        findOne: jest.fn().mockReturnValue(undefined),
+        update: jest.fn().mockReturnValue(updatedBookData),
+      };
+      const booksService = new BooksService(bookRepositoryMock as any);
+      const bookToUpdate = new Books();
+      bookToUpdate.id = '1';
+      bookToUpdate.title = 'Test Book';
+      bookToUpdate.author = 'Test Author';
+      bookToUpdate.isbn = '1234567890';
+
+      const updatedBook = new Books();
+      updatedBook.id = '1';
+      updatedBook.title = 'Updated Test Book';
+      updatedBook.author = 'Updated Test Author';
+      updatedBook.isbn = '0987654321';
+      jest
+        .spyOn(bookRepositoryMock, 'findOne')
+        .mockResolvedValueOnce(bookToUpdate);
+      jest
+        .spyOn(bookRepositoryMock, 'update')
+        .mockResolvedValueOnce(updatedBook);
+      const result = await booksService.updateBook('1', updatedBookData);
+      expect(result).toEqual(updatedBook);
+    });
+
+    // Tests that a book can be deleted successfully
+    it('test delete book successfully', async () => {
+      const deletedBookData = {};
+      const bookRepositoryMock = {
+        findOne: jest.fn().mockReturnValue(undefined),
+        delete: jest.fn().mockReturnValue(deletedBookData),
+      };
+      const booksService = new BooksService(bookRepositoryMock as any);
+      const bookToDeletete = new Books();
+      bookToDeletete.id = '1';
+      bookToDeletete.title = 'Test Book';
+      bookToDeletete.author = 'Test Author';
+      bookToDeletete.isbn = '1234567890';
+
+      jest
+        .spyOn(bookRepositoryMock, 'findOne')
+        .mockResolvedValueOnce(bookToDeletete);
+      jest.spyOn(bookRepositoryMock, 'delete').mockResolvedValueOnce({});
+      const result = await booksService.deleteteBook('1');
+      expect(result).toEqual(deletedBookData);
     });
   });
 });

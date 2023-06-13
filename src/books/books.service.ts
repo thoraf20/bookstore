@@ -47,4 +47,25 @@ export class BooksService {
 
     return book;
   }
+
+  async updateBook(id: string, bookData: any) {
+    const book = await this.bookRepository.findOne({
+      where: { id },
+    });
+
+    if (!book) {
+      throw new NotFoundException(`Book with id ${id} not found`);
+    }
+    return this.bookRepository.update(id, bookData);
+  }
+
+  async deleteteBook(id: string) {
+    const book = await this.bookRepository.findOne({
+      where: { id },
+    });
+    if (!book) {
+      throw new NotFoundException(`Book with id ${id} not found`);
+    }
+    return this.bookRepository.delete(id);
+  }
 }

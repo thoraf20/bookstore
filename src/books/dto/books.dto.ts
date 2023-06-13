@@ -17,3 +17,20 @@ export class AddBookDto {
   @IsOptional()
   isbn: string;
 }
+
+export class UpdateBookDto {
+  @ApiPropertyOptional()
+  @IsString()
+  @IsNotEmpty()
+  title: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsNotEmpty()
+  author: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  isbn: string;
+}

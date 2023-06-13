@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Logger,
   Param,
+  Patch,
   Post,
   UsePipes,
   ValidationPipe,
@@ -11,7 +13,7 @@ import {
 import { ErrorResponseObject, SuccessResponseObject } from '../common/https';
 import { BooksService } from './books.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AddBookDto } from './dto/books.dto';
+import { AddBookDto, UpdateBookDto } from './dto/books.dto';
 
 @ApiTags('Book')
 @Controller('books')
@@ -55,6 +57,35 @@ export class BooksController {
       return new SuccessResponseObject(`book fetched successfully`, event);
     } catch (error) {
       this.logger.error(`fetch book error. ${error.message}`, error.stack);
+      ErrorResponseObject(error);
+    }
+  }
+
+  @Patch('/:bookId')
+  @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'update book' })
+  async update(@Body() body: UpdateBookDto, @Param('bookId') bookId: string) {
+    try {
+      const book = await this.booksService.updateBook(bookId, body);
+      return new SuccessResponseObject(
+        `book details updated successfully`,
+        book,
+      );
+    } catch (error) {
+      this.logger.error(`update book error. ${error.message}`, error.stack);
+      ErrorResponseObject(error);
+    }
+  }
+
+  @Delete('/:bookId')
+  @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'delete book' })
+  async delete(@Param('bookId') bookId: string) {
+    try {
+      await this.booksService.deleteteBook(bookId);
+      return new SuccessResponseObject(`book deleted successfully`);
+    } catch (error) {
+      this.logger.error(`delete book error. ${error.message}`, error.stack);
       ErrorResponseObject(error);
     }
   }

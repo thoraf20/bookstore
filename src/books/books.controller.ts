@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Logger,
   Post,
   UsePipes,
@@ -27,6 +28,19 @@ export class BooksController {
       return new SuccessResponseObject(`book created successfully`, book);
     } catch (error) {
       this.logger.error(`add book error. ${error.message}`, error.stack);
+      ErrorResponseObject(error);
+    }
+  }
+
+  @Get('/')
+  @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'get all books' })
+  async fetchAllBooks() {
+    try {
+      const books = await this.booksService.getAllBooks();
+      return new SuccessResponseObject(`books fetched successfully`, books);
+    } catch (error) {
+      this.logger.error(`fetch books error. ${error.message}`, error.stack);
       ErrorResponseObject(error);
     }
   }

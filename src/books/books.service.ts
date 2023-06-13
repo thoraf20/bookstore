@@ -25,4 +25,10 @@ export class BooksService {
 
     return book;
   }
+
+  async getAllBooks() {
+    const books = await this.bookRepository.find();
+
+    return books;
+  }
 }

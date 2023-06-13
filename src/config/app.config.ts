@@ -1,9 +1,10 @@
-import { cleanEnv, str, port } from 'envalid';
+import { cleanEnv, str, url, port } from 'envalid';
 
 interface BaseEnvironment {
   PORT: number;
   swaggerUsername: string;
   swaggerPassword: string;
+  DATABASE_URL: string;
 }
 
 export type Environment = BaseEnvironment;
@@ -24,6 +25,11 @@ export default () => {
       swaggerPassword: str({
         default: 'admin',
         desc: 'swagger password',
+      }),
+      DATABASE_URL: url({
+        default: 'postgres://postgres:postgres@localhost:5432/bookstore',
+        desc: 'Full URL to connect to database server.',
+        example: 'postgresql://username:password@localhost:5432/database',
       }),
     });
   }

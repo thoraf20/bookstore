@@ -8,6 +8,8 @@ import bodyParser from 'body-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import env from './config/app.config';
 import basicAuth from 'express-basic-auth';
+import { BooksService } from './books/books.service';
+import { AddBookDto } from './books/dto/books.dto';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -81,6 +83,71 @@ describe('AppController', () => {
     });
     it('should return "Hello World!"', () => {
       expect(appController.getHello()).toBe('Hello World!');
+    });
+  });
+
+  describe('book', () => {
+    // Tests that a book with unique details can be added successfully
+    it('test add book unique details', async () => {
+      const bookRepositoryMock = {
+        findOne: jest.fn().mockResolvedValue(undefined),
+        save: jest.fn().mockImplementation((book) => Promise.resolve(book)),
+      };
+      const booksService = new BooksService(bookRepositoryMock as any);
+
+      const dto = new AddBookDto();
+      dto.title = 'The Hobbit';
+      dto.author = 'J.R.R. Tolkien';
+      dto.isbn = '1234567890';
+
+      const result = await booksService.addBook(dto);
+
+      expect(bookRepositoryMock.findOne).toHaveBeenCalledWith({
+        where: { author: dto.author, title: dto.title, isbn: dto.isbn },
+      });
+      expect(bookRepositoryMock.save).toHaveBeenCalledWith(dto);
+      expect(result).toEqual(dto);
+    });
+
+    // Tests that a book can be added successfully with optional fields left empty
+    it('test add book empty optional fields', async () => {
+      const bookRepositoryMock = {
+        findOne: jest.fn().mockResolvedValue(undefined),
+        save: jest.fn().mockImplementation((book) => Promise.resolve(book)),
+      };
+      const booksService = new BooksService(bookRepositoryMock as any);
+
+      const dto = new AddBookDto();
+      dto.title = 'The Hobbit';
+      dto.author = 'J.R.R. Tolkien';
+
+      const result = await booksService.addBook(dto);
+
+      expect(bookRepositoryMock.findOne).toHaveBeenCalledWith({
+        where: { author: dto.author, title: dto.title, isbn: dto.isbn },
+      });
+      expect(bookRepositoryMock.save).toHaveBeenCalledWith(dto);
+      expect(result).toEqual(dto);
+    });
+
+    // Tests that a book can be added successfully with optional fields left empty
+    it('test add book empty required fields', async () => {
+      const bookRepositoryMock = {
+        findOne: jest.fn().mockResolvedValue(undefined),
+        save: jest.fn().mockImplementation((book) => Promise.resolve(book)),
+      };
+      const booksService = new BooksService(bookRepositoryMock as any);
+
+      const dto = new AddBookDto();
+      dto.title = 'The Hobbit';
+      dto.isbn = '1234565';
+
+      await booksService.addBook(dto);
+
+      expect(bookRepositoryMock.findOne).toHaveBeenCalledWith({
+        where: { author: dto.author, title: dto.title, isbn: dto.isbn },
+      });
+      expect(bookRepositoryMock.save).not.toBeCalledTimes(0);
     });
   });
 });
